@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+    container_name: 'gw-kotlin-demo'
+    ports:
+      - '18082:8080'
+    depends_on:
+      redis:
+        condition: service_healthy
+    env_file:
+      - .env
+    networks:
+      - gw-kotlin-demo
+
+  redis:
+    image: redis:alpine
+    container_name: 'project-pluto-redis'
+    ports:
+      - '16379:6379'
+    healthcheck:
+      test: [ "CMD-SHELL", "redis-cli", "ping" ]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+    volumes:
+      - ./_redis:/data
+    networks:
+      - gw-kotlin-demo
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  gw-kotlin-demo:
