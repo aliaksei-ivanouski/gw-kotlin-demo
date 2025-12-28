@@ -1,3 +1,42 @@
+server:
+  port: 8080
+
 spring:
   application:
     name: gw-kotlin-demo
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:16379}
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: auth_service_route
+              uri: ${AUTH_SERVICE_URL:http://localhost:8082}
+              predicates:
+                - Path=/api/v1/auth/**
+              filters:
+                - name: RequestRateLimiter
+                  args:
+                    redis-rate-limiter.replenishRate: 10
+                    redis-rate-limiter.burstCapacity: 20
+                    redis-rate-limiter.requestedTokens: 1
+                    key-resolver: "#{@userKeyResolver}"
+
+            - id: user_service_route
+              uri: ${USER_SERVICE_URL:http://localhost:8082}
+              predicates:
+                - Path=/api/v1/users/**
+              filters:
+                - name: RequestRateLimiter
+                  args:
+                    redis-rate-limiter.replenishRate: 5
+                    redis-rate-limiter.burstCapacity: 10
+                    key-resolver: "#{@userKeyResolver}"
+
+logging:
+  level:
+    org.springframework: DEBUG
+    com.aivanouski.gw_kotlin_demo: DEBUG

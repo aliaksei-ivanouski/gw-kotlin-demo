@@ -6,7 +6,7 @@ services:
       context: .
     container_name: 'gw-kotlin-demo'
     ports:
-      - '18082:8080'
+      - '18080:8080'
     depends_on:
       redis:
         condition: service_healthy
@@ -17,7 +17,7 @@ services:
 
   redis:
     image: redis:alpine
-    container_name: 'project-pluto-redis'
+    container_name: 'gw-redis-demo'
     ports:
       - '16379:6379'
     healthcheck:
