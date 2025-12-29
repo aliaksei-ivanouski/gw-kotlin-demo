@@ -3,6 +3,9 @@ spring:
     gateway:
       server:
         webflux:
+          httpclient:
+            connect-timeout: 200
+            response-timeout: 200ms
           routes:
             - id: user_service_route
               uri: forward:/
@@ -16,6 +19,23 @@ spring:
                     redis-rate-limiter.burstCapacity: 1
                     redis-rate-limiter.requestedTokens: 1
                     key-resolver: "#{@userKeyResolver}"
+            - id: timeout_test_route
+              uri: ${test.upstream.url:http://localhost:18080}
+              predicates:
+                - Path=/__test/timeout/**
+              filters:
+                - SetPath=/slow
+            - id: cb_test_route
+              uri: forward:/
+              predicates:
+                - Path=/__test/cb/**
+              filters:
+                - SetPath=/__test/boom
+                - AddRequestHeader=X-Target-Service,cb-test-service
+                - name: CircuitBreaker
+                  args:
+                    name: cbTestCircuitBreaker
+                    fallbackUri: forward:/__fallback
 
 logging:
   level:
