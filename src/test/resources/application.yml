@@ -1,0 +1,22 @@
+spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: user_service_route
+              uri: forward:/
+              predicates:
+                - Path=/api/v1/users/**
+              filters:
+                - SetPath=/__test/downstream
+                - name: RequestRateLimiter
+                  args:
+                    redis-rate-limiter.replenishRate: 1
+                    redis-rate-limiter.burstCapacity: 1
+                    redis-rate-limiter.requestedTokens: 1
+                    key-resolver: "#{@userKeyResolver}"
+
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO

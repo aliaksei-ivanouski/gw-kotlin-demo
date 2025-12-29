@@ -18,6 +18,6 @@
 !.gitattributes
 
 !Dockerfile
-!docker-compose.local.yml
+!docker-compose.yml
 
 !.env.example

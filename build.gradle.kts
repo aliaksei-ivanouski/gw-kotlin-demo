@@ -31,8 +31,12 @@ dependencies {
 	implementation("tools.jackson.module:jackson-module-kotlin")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	testImplementation("org.springframework.boot:spring-boot-starter-webflux-test")
+	testImplementation("org.junit.jupiter:junit-jupiter:6.0.1")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test")
+	testImplementation("org.testcontainers:testcontainers:2.0.3")
+	testImplementation("org.testcontainers:junit-jupiter:1.21.4")
+	testImplementation("com.redis:testcontainers-redis:2.2.4")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
